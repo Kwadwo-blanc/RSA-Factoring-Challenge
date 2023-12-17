@@ -1,25 +1,49 @@
 #!/usr/bin/python3
 
-def fc():
-    """
-    function fc to search file to convert number and format n=p*q
-    """
+import sys
+
+
+def is_prime(number):
+    if number < 2:
+        return False
+    for i in range(2, int(number**0.5) + 1):
+        if number % i == 0:
+            return False
+    return True
+
+
+def factorize_to_primes(number):
+    factors = []
+    divisor = 2
+    while divisor <= number:
+        if number % divisor == 0 and is_prime(divisor):
+            factors.append(divisor)
+            number //= divisor
+        else:
+            divisor += 1
+    return factors
+
+
+def main(file_path):
     try:
-        revfile = sys.argv[1]
-        with open(revfile) as f:
-            for revnumber in f:
-                revnumber = int(revnumber)
-                if revnumber % 2 == 0:
-                    print("{}={}*{}".format(revnumber, revnumber // 2, 2))
-                    continue
-                i = 3
-                while i <= revnumber // 2:
-                    if revnumber % i == 0:
-                        print("{}={}*{}".format(revnumber, revnumber // i, i))
-                        break
-                    i = i + 2
-                    if i == (revnumber // 2) + 1:
-                        print("{}={}*{}".format(revnumber, revnumber, 1))
-    except (IndexError):
-        pass
-    fc()
+        with open(file_path, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                prime_factors = factorize_to_primes(number)
+                if len(prime_factors) == 2:
+                    print(f"{number}={prime_factors[0]}*{prime_factors[1]}")
+                else:
+                    print(f"{number} is not a product of two prime numbers.")
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: factors <file>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+    main(file_path)

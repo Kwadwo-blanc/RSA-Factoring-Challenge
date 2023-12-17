@@ -4,18 +4,31 @@ import sys
 
 
 def factorize(number):
-    for i in range(2, number):
-        if number % i == 0:
-            return i, number // i
-    return None, None
+    factors = []
+    divisor = 2
+    while divisor <= number:
+        if number % divisor == 0:
+            factors.append(divisor)
+            number //= divisor
+        else:
+            divisor += 1
+    return factors
 
 
 def main(file_path):
-    with open(file_path, 'r') as file:
-        for line in file:
-            number = int(line.strip())
-            factor1, factor2 = factorize(number)
-            print(f"{number}={factor1}*{factor2}")
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                factors = factorize(number)
+                if len(factors) == 2:
+                    print(f"{number}={factors[0]}*{factors[1]}")
+                else:
+                    print(f"{number}={number}*1")
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
